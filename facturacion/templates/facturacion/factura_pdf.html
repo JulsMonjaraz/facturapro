@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Factura {{ factura.numero }}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #3f3d56;
+            padding: 40px;
+            font-size: 14px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #a78bfa;
+            padding-bottom: 20px;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #8b5cf6;
+        }
+        
+        .logo span { color: #3f3d56; }
+        
+        .factura-info {
+            text-align: right;
+        }
+        
+        .factura-info h2 {
+            font-size: 24px;
+            color: #8b5cf6;
+            margin-bottom: 8px;
+        }
+        
+        .factura-info p {
+            color: #8b8a9e;
+            font-size: 13px;
+            margin: 2px 0;
+        }
+        
+        .cliente-info {
+            background: #faf8ff;
+            border: 1px solid #e9e5f5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .cliente-info h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #8b8a9e;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        
+        .cliente-info p {
+            margin: 4px 0;
+            color: #3f3d56;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        
+        thead {
+            background: #ede9fe;
+        }
+        
+        thead th {
+            text-align: left;
+            padding: 12px;
+            color: #6d28d9;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        tbody td {
+            padding: 12px;
+            border-bottom: 1px solid #e9e5f5;
+        }
+        
+        .numero { text-align: right; }
+        
+        .totales {
+            margin-left: auto;
+            width: 320px;
+        }
+        
+        .totales tr td {
+            padding: 8px 12px;
+        }
+        
+        .totales tr td:last-child {
+            text-align: right;
+        }
+        
+        .totales .total-final {
+            background: #8b5cf6;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .totales .total-final td {
+            padding: 14px 12px;
+        }
+        
+        .footer {
+            margin-top: 60px;
+            text-align: center;
+            color: #8b8a9e;
+            font-size: 11px;
+            border-top: 1px solid #e9e5f5;
+            padding-top: 20px;
+        }
+        
+        .notas {
+            margin-top: 30px;
+            padding: 16px;
+            background: #faf8ff;
+            border-radius: 8px;
+            border-left: 4px solid #a78bfa;
+        }
+        
+        .notas h4 {
+            font-size: 12px;
+            color: #8b8a9e;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo">Factura<span>Pro</span></div>
+        <div class="factura-info">
+            <h2>FACTURA</h2>
+            <p><strong>{{ factura.numero }}</strong></p>
+            <p>Emitida: {{ factura.fecha_emision|date:"d/m/Y" }}</p>
+            <p>Vence: {{ factura.fecha_vencimiento|date:"d/m/Y" }}</p>
+        </div>
+    </div>
+
+    <div class="cliente-info">
+        <h3>Cliente</h3>
+        <p><strong>{{ factura.cliente.nombre }}</strong></p>
+        {% if factura.cliente.email %}<p>Email: {{ factura.cliente.email }}</p>{% endif %}
+        {% if factura.cliente.RFC %}<p>RFC: {{ factura.cliente.RFC }}</p>{% endif %}
+        {% if factura.cliente.direccion %}<p>Dirección: {{ factura.cliente.direccion }}</p>{% endif %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Impuesto</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in factura.items.all %}
+                <tr>
+                    <td>{{ item.descripcion }}</td>
+                    <td>{{ item.cantidad }}</td>
+                    <td>${{ item.precio_unitario }}</td>
+                    <td>{{ item.porcentaje_impuesto }}%</td>
+                    <td class="numero">${{ item.total }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="totales">
+        <tr>
+            <td>Subtotal:</td>
+            <td>${{ factura.subtotal }}</td>
+        </tr>
+        <tr>
+            <td>Impuestos:</td>
+            <td>${{ factura.impuestos }}</td>
+        </tr>
+        {% if factura.descuento > 0 %}
+        <tr>
+            <td>Descuento:</td>
+            <td>-${{ factura.descuento }}</td>
+        </tr>
+        {% endif %}
+        <tr class="total-final">
+            <td>TOTAL:</td>
+            <td>${{ factura.total }}</td>
+        </tr>
+    </table>
+
+    {% if factura.notas %}
+        <div class="notas">
+            <h4>Notas</h4>
+            <p>{{ factura.notas }}</p>
+        </div>
+    {% endif %}
+
+    <div class="footer">
+        <p>FacturaPro — Sistema de facturación para freelancers</p>
+        <p>Este documento fue generado automáticamente</p>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+# Entorno virtual
+venv/
+env/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Variables de entorno (excepto el ejemplo)
+.env
+.env.local
+.env.production
+.env.development
+!.env.example
+
+# Base de datos
+*.sqlite3
+
+# Media
+media/
+
+# Coverage
+htmlcov/
+.coverage
+coverage.xml
+.pytest_cache/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# IDE
+.vscode/
+.idea/
+
+# Sistema
+.DS_Store
+
+# Celery Beat
+celerybeat-schedule
+celerybeat-schedule-shm
+celerybeat-schedule-wal
+celerybeat-schedule.bak
+celerybeat.pid

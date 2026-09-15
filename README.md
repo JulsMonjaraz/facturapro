@@ -204,9 +204,3 @@ text
 
 ---
 
-## 🛠️ PASO 2: Sube el README
-
-```bash
-git add README.md
-git commit -m "Add professional README in English"
-git push
